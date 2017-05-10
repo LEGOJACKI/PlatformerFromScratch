@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="./silver.js"></script>
+<script src="./jquery-3.2.1.min.js"></script>
+
+</head>
+<body onkeydown="handleKeyDown();" onkeyup="handleKeyUp();">
+
+<canvas id="myCanvas" width="600" height="600" style="border:1px solid #c3c3c3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<script>
+function Person() {
+  x1 = 50;
+  y1 = 450;
+  var x2 = 50;
+  var y2 = 50;
+  width = 50;
+  height = 50;
+  var speed = 2;
+  var velocityX = 0;
+  var velocityY = 0;
+  gravity = 5;
+  movingRight = false;
+  movingLeft = false;
+  this.jump = function() {
+    if (y1 >= 450) {
+      this.changePos(0, -200);
+    }
+  }
+  this.renderSprite = function() {
+    //Body
+    if (person.movingLeft) {
+      velocityX += speed;
+    }
+    if (person.movingRight) {
+      velocityX -= speed;
+    }
+    this.changePos(velocityX, velocityY);
+    sc.rect("#FF0000", x1, y1, x2, y2);
+    if (velocityX > 0) {
+      velocityX -= 1;
+    }
+    if (velocityX < 0) {
+      velocityX += 1;
+    }
+    //STOPGAP GRAVITY!!! This won't have velocity, so replace soon.
+    if (!(y1 >= 450)) {
+      y1 += gravity;
+    }
+	
+  }
+  this.changePos = function(offsetX, offsetY) {
+    x1 += offsetX;
+    y1 += offsetY;
+    
+  }
+  return this;
+}
+
+function Ground() {
+  this.renderSprite = function() {
+    sc.rect("#00FF00", 0, 500, 600, 100);
+    
+  }
+  return this;
+}
+function Platform1() {
+  this.renderSprite = function() {
+    sc.rect("#ff8b26", 300, 300, 300, 50);
+    
+  }
+  return this;
+}
+function Box1() {
+  x1 = 600;
+  y1 = 450;
+  width = 50;
+  height = 50;
+  this.renderSprite = function() {
+    sc.rect("#000000", x1, y1, width, height);
+  }
+  return this;
+}
+var person = new Person();
+var ground = new Ground();
+var plat1 = new Platform1();
+var box1 = new Box1();
+var sc = SilverCanvas();
+sc.setup("myCanvas");
+sc.render = function() {
+  ground.renderSprite();
+  box1.renderSprite();
+  person.renderSprite();
+  plat1.renderSprite();
+}
+function handleKeyDown(e) {
+    e = e || window.event;
+    if (e.key == "a") { //left
+      person.movingRight = true;
+    }
+    if (e.key == "d") { //right
+      person.movingLeft = true;
+    }
+    if (e.key == " ") { //space/jump
+      person.jump();
+    }
+    // use e.keyCode
+};
+function handleKeyUp(e) {
+    e = e || window.event;
+    if (e.key == "a") { //left
+      person.movingRight = false;
+    }
+    if (e.key == "d") { //right
+      person.movingLeft = false;
+    }
+    // use e.keyCode
+};
+sc.render();
+update();
+</script>
+<a href="javascript:update()">Turbo</a>
+</body>
+</html>
